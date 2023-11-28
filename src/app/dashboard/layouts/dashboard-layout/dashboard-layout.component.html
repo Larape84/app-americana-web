@@ -1,0 +1,318 @@
+<div class="max-w-full overflow-x-hidden w-full h-screen">
+
+  <section class="w-full h-20 bg-gray-600 flex flex-row px-4">
+
+    <div class=" items-center px-4 flex gap-4">
+      <div class=" object-cover " style="max-width: 80px ; max-height: 80px;">
+
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Dian_%28Colombia%29_logo.svg/1280px-Dian_%28Colombia%29_logo.svg.png"  alt="">
+      </div>
+      <span class="text-white text-xl font-light">Modulo de cargue de archivos</span>
+
+
+    </div>
+
+    <div class="flex-grow flex items-center justify-end">
+
+      <button type="button" (click)="onLogout()" mat-stroked-button  ><span class="text-white">Cerrar Session </span></button>
+    </div>
+
+  </section>
+
+
+  <section class="flex flex-row max-w-full min-h-full">
+
+    <section class="w-64  min-w-[256px] max-w-[256px] flex flex-col min-h-full bg-gray-400 p-4 gap-4"  >
+
+      <div (click)="changeRuta('archivo')" [ngClass]="ruta==='archivo'? 'bg-blue-500  shadow-md items-center flex flex-row gap-4 ' : 'bg-transparent items-center flex flex-row gap-4' " class="border border-gray-200 p-4 rounded-md cursor-pointer">
+        <mat-icon class="text-white w-10 h-10">description</mat-icon>
+
+        <span class="text-white">Subir archivos</span>
+      </div>
+
+      <div (click)="changeRuta('historico')" [ngClass]="ruta==='historico'? 'bg-blue-500  shadow-md items-center flex flex-row gap-4 ' : 'bg-transparent items-center flex flex-row gap-4' " class="border border-gray-200 p-4 rounded-md cursor-pointer">
+        <mat-icon class="text-white w-10 h-10">assignment</mat-icon>
+
+        <span class="text-white">Histórico</span>
+      </div>
+
+      <div (click)="changeRuta('grafica')" [ngClass]="ruta==='grafica'? 'bg-blue-500  shadow-md items-center flex flex-row gap-4 ' : 'bg-transparent items-center flex flex-row gap-4' " class="border border-gray-200 p-4 rounded-md cursor-pointer">
+        <mat-icon class="text-white w-10 h-10">trending_up</mat-icon>
+
+        <span class="text-white">Ver graficas</span>
+      </div>
+
+
+    </section>
+
+
+    <section  *ngIf="ruta==='archivo'" class="flex flex-col p-8 w-full pl-2 pt-2 overflow-x-hidden">
+
+
+      <div class="flex flex-auto flex-col w-full">
+
+
+
+      <div class="flex flex-col gap-4 mb-4">
+
+        <h1>Subir archivo de excel</h1>
+
+              <hr>
+      </div>
+
+      <div class=" rounded-md bg-gray-100 w-full h-[360px] flex items-center justify-center p-6 flex-col">
+
+
+         <div (click)="loadArchivo()" class="border-4 text-center hover:bg-gray-200 hover:border-gray-600 border-gray-400 border-dashed flex flex-col items-center justify-center w-full h-3/5">
+
+           <mat-icon class="text-7xl text-gray-300" style="max-height: 120px !important; max-width: 120px !important; width: 120px !important; height: 120px !important;">backup</mat-icon>
+           <span class="text-gray-500">{{!!filedata ? filedata.name : 'Seleccionar un archivo con formato XLS ó XLSX'}}</span>
+
+         </div>
+
+        <input accept=".xls,.xlsx" #fileinput id="fileinput" type="file" style="display: none" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx">
+        <div class="flex flex-row gap-4 ">
+
+          <button type="button" class="mt-4 bg-gray-400 text-white rounded-full h-15 py-2 px-4  hover:bg-gray-600"  [hidden]="!filedata"  (click)="borrar()" >Borrar archivo</button>
+
+          <button type="button" class="mt-4 bg-gray-400 text-white rounded-full h-15 p-2 py-2 px-4  hover:bg-gray-600" (click)="Upload()" >Guardar archivo</button>
+        </div>
+
+
+       </div>
+
+       <div class="mt-3 p-2 max-w-full overflow-x-hidden">
+
+
+
+          <div class="w-full overflow-x-auto border border-gray-400">
+            <table class="w-full text-black mat-table"  mat-table [dataSource]="dataSource">
+
+
+              <ng-container  *ngFor="let item of displayedColumns" [matColumnDef]="item">
+                <th mat-header-cell *matHeaderCellDef> {{item}} </th>
+                <td mat-cell *matCellDef="let element"> {{element[item]}} </td>
+              </ng-container>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell text-center bg-white h-52" colspan="17">
+                    <div class="flex items-center content-center justify-center mt-7 gap-3">
+                        <mat-icon class="text-gray-400 w-10 h-10">info</mat-icon>
+                        <p class="text-5xl font-semibold tracking-tight">
+                            {{ "Aviso" }}
+                        </p>
+                    </div>
+                    <p class="text-lg mb-8">
+                        {{ "Lo sentimos, no se encontraron datos " }}
+                    </p>
+                </td>
+                <!-- <td class="mat-cell text-center" colspan="20" *ngIf="this.allDataRows.length"> -->
+
+                <!-- </td> -->
+            </tr>
+
+
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+          </div>
+          <mat-paginator class="flex flex-row items-center justify-start flex-grow " [pageSizeOptions]="[5, 10, 20]">
+          </mat-paginator>
+
+
+
+
+
+
+       </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="flex flex-col p-8 w-full pl-2 pt-2 overflow-x-hidden" *ngIf="ruta==='grafica'">
+
+      <div class="flex flex-col gap-4 mb-4">
+
+        <h1> Detalle de las graficas </h1>
+
+        <div class="flex flex-row">
+
+        </div>
+        <div class="w-full flex flex-row items-center  gap-4 px-4 py-2">
+
+          <div class="flex flex-col gap-2">
+              <span>Fecha de inicio</span>
+            <div class=" w-36 flex flex-row rounded-md border border-gray-300 p-2 max-h-15">
+              <input [(ngModel)]="dates.init" type="date">
+          </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <span>Fecha final</span>
+        <div class=" w-36 flex flex-row rounded-md border border-gray-300 p-2 max-h-15">
+          <input [(ngModel)]="dates.end" type="date">
+          </div>
+        </div>
+
+        <button (click)="loadGraficos()" type="button" class="border border-gray-600 max-h-8 h-8 p2 w-36 mt-7 bg-gray-400 hover:bg-gray-500 text-white rounded-full flex items-center justify-center"> <mat-icon class="text-gray-300 w-6 h-6 mr-2">search</mat-icon> Consultar</button>
+      </div>
+
+
+              <hr>
+
+      </div>
+
+
+
+
+            <div *ngIf="reloadGraficos" class="w-full border border-gray-100 mt-4 p-2" >
+              <div class="grid grid-cols-2 gap-4 mt-4">
+
+                  <div class="border border-gray-300 rounded-md w-full p-3 flex items-center justify-center">
+                      <canvas baseChart
+                                  [datasets]="lineChartData"
+                                  [labels]="lineChartLabels"
+                                  [type]="'bar'">
+                        </canvas>
+                  </div>
+
+                  <div class="border border-gray-300 rounded-md w-full p-3 flex items-center justify-center">
+                    <canvas baseChart
+                                [datasets]="lineChartDataTwo"
+                                [labels]="lineChartLabelTwo"
+                                [type]="'bar'">
+                      </canvas>
+                </div>
+
+                <div class="col-span-2 border border-gray-300 rounded-md w-full p-3 flex items-center justify-center">
+                  <canvas baseChart
+                              [datasets]="lineChartDatatree"
+                              [labels]="lineChartLabelsTree"
+                              [type]="'line'"
+                              >
+                    </canvas>
+              </div>
+
+              </div>
+            </div>
+
+    </section>
+
+
+    <section class="flex flex-col p-8 w-full pl-2 pt-2 overflow-x-hidden" *ngIf="ruta==='historico'">
+
+      <div class="flex flex-col gap-4 mb-4">
+
+        <h1>Detalle consulta de los reportes</h1>
+
+        <div class="flex flex-row">
+
+        </div>
+        <div class="w-full flex flex-row items-center  gap-4 px-4 py-2">
+
+          <div class="flex flex-col gap-2">
+              <span>Fecha de inicio</span>
+            <div class=" w-36 flex flex-row rounded-md border border-gray-300 p-2 max-h-15">
+              <input [(ngModel)]="datesSearch.init" type="date">
+          </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <span>Fecha final</span>
+        <div class=" w-36 flex flex-row rounded-md border border-gray-300 p-2 max-h-15">
+          <input [(ngModel)]="datesSearch.end" type="date">
+          </div>
+        </div>
+
+        <button (click)="searchData()" type="button" class="border border-gray-600 max-h-9 h-9 p2 w-36 mt-7 bg-gray-400 hover:bg-gray-500 text-white rounded-full flex items-center justify-center"> <mat-icon class="text-gray-300 w-6 h-6 mr-2">search</mat-icon> Consultar</button>
+
+        <button *ngIf="!!downloadExcelFile.length" (click)="downloadExcel()" type="button" class="border border-gray-600 max-h-9 h-9 p2 w-52 mt-7 bg-gray-400 hover:bg-gray-500 text-white rounded-full flex items-center justify-center"> <mat-icon class="text-gray-300 w-6 h-6 mr-2">cloud_download</mat-icon> Descargar en Excel</button>
+
+
+      </div>
+
+
+              <hr>
+
+      </div>
+
+
+
+
+            <div class="w-full  border border-gray-400 mt-4 p-4 flex flex-col overflow-x-hidden" >
+
+              <div class="rounded-md w-64 flex flex-row p-2 items-center border border-gray-400 h-10">
+
+                <mat-icon class="text-gray-400 w-6 h-6 mr-2">search</mat-icon>
+                <input (keyup)="filtrarData(text.value)" (paste)="filtrarData(text.value)" #text placeholder="Filtrar..." type="text" class="w-full">
+
+              </div>
+
+
+       <div class="mt-3 p-2 max-w-full overflow-x-hidden">
+
+
+
+          <div class="w-full overflow-x-auto border border-gray-400">
+            <table class="w-full text-black mat-table"  mat-table [dataSource]="dataSource">
+
+
+              <ng-container  *ngFor="let item of displayedColumns" [matColumnDef]="item">
+                <th mat-header-cell *matHeaderCellDef> {{item}} </th>
+                <td mat-cell *matCellDef="let element"> {{element[item]}} </td>
+              </ng-container>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell text-center bg-white h-52" colspan="17">
+                    <div class="flex items-center content-center justify-center mt-7 gap-3">
+                        <mat-icon class="text-gray-400 w-10 h-10">info</mat-icon>
+                        <p class="text-5xl font-semibold tracking-tight">
+                            {{ "Aviso" }}
+                        </p>
+                    </div>
+                    <p class="text-lg mb-8">
+                        {{ "Lo sentimos, no se encontraron datos " }}
+                    </p>
+                </td>
+                <!-- <td class="mat-cell text-center" colspan="20" *ngIf="this.allDataRows.length"> -->
+
+                <!-- </td> -->
+            </tr>
+
+
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+
+        </div>
+
+        <mat-paginator class="flex flex-row items-center justify-start flex-grow " [pageSizeOptions]="[5, 10, 20]">
+        </mat-paginator>
+
+
+
+
+
+
+     </div>
+
+
+
+
+            </div>
+
+    </section>
+
+  </section>
+
+
+
+
+
+</div>
